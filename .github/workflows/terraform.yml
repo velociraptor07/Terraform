@@ -59,31 +59,36 @@ jobs:
 
     steps:
       # Checkout the repository to the GitHub Actions runner
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Install Terraform
+      # Install Terraform CLI
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
 
-      # Initialize Terraform in the current directory (if your Terraform files are in the root of the repo)
+      # Initialize Terraform working directory
       - name: Terraform Init
-        run: terraform -chdir=. init
+        env:
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        run: terraform init
 
-      # Plan Terraform, specifying the working directory and using the -var flags
+      # Run Terraform Format (to check if the files are properly formatted)
+      - name: Terraform Format
+        run: terraform fmt -check
+
+      # Run Terraform Plan
       - name: Terraform Plan
         env:
           ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-        run: terraform -chdir=. plan -input=false \
-          -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
-          -var "client_id=${{ secrets.AZURE_CLIENT_ID }}" \
-          -var "client_secret=${{ secrets.AZURE_CLIENT_SECRET }}" \
-          -var "tenant_id=${{ secrets.AZURE_TENANT_ID }}"
+        run: terraform plan -input=false
 
-      # Apply Terraform on push to main, using the -chdir flag
+      # Apply Terraform changes on push to main
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
@@ -91,8 +96,4 @@ jobs:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-        run: terraform -chdir=. apply -auto-approve \
-          -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
-          -var "client_id=${{ secrets.AZURE_CLIENT_ID }}" \
-          -var "client_secret=${{ secrets.AZURE_CLIENT_SECRET }}" \
-          -var "tenant_id=${{ secrets.AZURE_TENANT_ID }}"
+        run: terraform apply -auto-approve -input=false
