@@ -11,21 +11,21 @@ resource "azurerm_resource_group" "example" {
 }
 
 resource "azurerm_virtual_network" "example" {
-  name                = "yash-vn"
+  name                = "Yash-network"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
 }
 
 resource "azurerm_subnet" "example" {
-  name                 = "yash-subnet"
+  name                 = "Yash-subnet"
   resource_group_name  = azurerm_resource_group.example.name
   virtual_network_name = azurerm_virtual_network.example.name
   address_prefixes     = ["10.0.1.0/24"]
 }
 
 resource "azurerm_network_interface" "example" {
-  name                = "yash-nic"
+  name                = "example-nic"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
 
@@ -64,7 +64,7 @@ resource "azurerm_virtual_machine" "example" {
   }
 
   os_profile_windows_config {
-    provision_vm_agent        = true
-    enable_automatic_updates  = true
+    provision_vm_agent = true
   }
 }
+
