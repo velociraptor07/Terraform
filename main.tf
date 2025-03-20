@@ -6,6 +6,6 @@ provider "azurerm" {
 
 
 resource "azurerm_resource_group" "example" {
-  name     = "first-rg"
+  name     = "second-rg"
   location = "East US"
 }
