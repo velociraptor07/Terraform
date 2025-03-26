@@ -7,7 +7,6 @@ provider "azurerm" {
 terraform {
   backend "azurerm" {
     resource_group_name   = "yash-rg"
-    subscription_id       = "var.subscription_id"
     storage_account_name  = "veloyash1107"
     container_name        = "yash01" # The container you created
     key                   = "terraform.tfstate" # Name of the state file in the container
