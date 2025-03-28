@@ -32,7 +32,7 @@ jobs:
         run: terraform init
 
       - name: Force Unlock State
-        run: terraform force-unlock -force 95934461-a6db-c598-81e1-ebfdf5d70d3b
+        run: terraform force-unlock -force 7e237a8a-7c6d-01ce-23a1-6dfbee208459
         env:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
